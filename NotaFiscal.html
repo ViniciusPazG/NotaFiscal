@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Nota Fiscal de Serviço</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 90%;
+            max-width: 500px;
+            margin: 30px auto;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        label {
+            font-size: 14px;
+            margin-bottom: 5px;
+            display: block;
+            color: #555;
+        }
+        input[type="number"], input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #0288d1;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #026ca0;
+        }
+        .nota-fiscal {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e3f2fd;
+            border-radius: 8px;
+        }
+        .nota-fiscal p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Gerar Nota Fiscal de Serviço</h2>
+    <form id="formNota">
+        <label for="venda">Valor da Venda:</label>
+        <input type="number" id="venda" placeholder="Digite o valor da venda" required>
+
+        <label for="descricao">Descrição dos Itens:</label>
+        <input type="text" id="descricao" placeholder="Descreva os itens vendidos" required>
+
+        <label for="taxaIr">IRPF (%):</label>
+        <input type="number" id="taxaIr" placeholder="Ex: 15" required>
+
+        <label for="taxaPis">PIS (%):</label>
+        <input type="number" id="taxaPis" placeholder="Ex: 1.65" required>
+
+        <label for="taxaCofins">COFINS (%):</label>
+        <input type="number" id="taxaCofins" placeholder="Ex: 3" required>
+
+        <label for="taxaInss">INSS (%):</label>
+        <input type="number" id="taxaInss" placeholder="Ex: 11" required>
+
+        <label for="taxaIss">ISSQN (%):</label>
+        <input type="number" id="taxaIss" placeholder="Ex: 5" required>
+
+        <button type="button" onclick="gerarNotaFiscal()">Gerar Nota Fiscal</button>
+    </form>
+
+    <div id="resultado" class="nota-fiscal" style="display: none;">
+        <p><strong>Itens:</strong> <span id="resultadoItens"></span></p>
+        <p><strong>Valor Total:</strong> R$ <span id="resultadoVenda"></span></p>
+        <p><strong>Imposto IRPF:</strong> R$ <span id="resultadoIrpf"></span></p>
+        <p><strong>Imposto PIS:</strong> R$ <span id="resultadoPis"></span></p>
+        <p><strong>Imposto COFINS:</strong> R$ <span id="resultadoCofins"></span></p>
+        <p><strong>Imposto INSS:</strong> R$ <span id="resultadoInss"></span></p>
+        <p><strong>Imposto ISSQN:</strong> R$ <span id="resultadoIssqn"></span></p>
+        <p><strong>Total de Impostos:</strong> R$ <span id="resultadoTotalImpostos"></span></p>
+        <p><strong>Valor Final (líquido):</strong> R$ <span id="resultadoLiquido"></span></p>
+    </div>
+</div>
+
+<script>
+    function gerarNotaFiscal() {
+        // Obtendo os valores dos inputs
+        const valorVenda = parseFloat(document.getElementById('venda').value) || 0;
+        const itens = document.getElementById('descricao').value;
+        const irpf = parseFloat(document.getElementById('taxaIr').value) || 0;
+        const pis = parseFloat(document.getElementById('taxaPis').value) || 0;
+        const cofins = parseFloat(document.getElementById('taxaCofins').value) || 0;
+        const inss = parseFloat(document.getElementById('taxaInss').value) || 0;
+        const issqn = parseFloat(document.getElementById('taxaIss').value) || 0;
+
+        // Calculando os impostos
+        const impostoIrpf = valorVenda * (irpf / 100);
+        const impostoPis = valorVenda * (pis / 100);
+        const impostoCofins = valorVenda * (cofins / 100);
+        const impostoInss = valorVenda * (inss / 100);
+        const impostoIssqn = valorVenda * (issqn / 100);
+
+        // Calculando o total de impostos e o valor líquido
+        const totalImpostos = impostoIrpf + impostoPis + impostoCofins + impostoInss + impostoIssqn;
+        const valorLiquido = valorVenda - totalImpostos;
+
+        // Exibindo os resultados na página
+        document.getElementById('resultadoItens').textContent = itens;
+        document.getElementById('resultadoVenda').textContent = valorVenda.toFixed(2);
+        document.getElementById('resultadoIrpf').textContent = impostoIrpf.toFixed(2);
+        document.getElementById('resultadoPis').textContent = impostoPis.toFixed(2);
+        document.getElementById('resultadoCofins').textContent = impostoCofins.toFixed(2);
+        document.getElementById('resultadoInss').textContent = impostoInss.toFixed(2);
+        document.getElementById('resultadoIssqn').textContent = impostoIssqn.toFixed(2);
+        document.getElementById('resultadoTotalImpostos').textContent = totalImpostos.toFixed(2);
+        document.getElementById('resultadoLiquido').textContent = valorLiquido.toFixed(2);
+
+        // Exibindo a nota fiscal
+        document.getElementById('resultado').style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
